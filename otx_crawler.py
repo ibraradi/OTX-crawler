@@ -2,7 +2,7 @@ from random import choice
 from colorama import Fore
 from json import loads
 import requests
-
+import sys
 # Disable SSL warning
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -51,7 +51,7 @@ def otx_crawls(target):
         {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"},
         {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"}
     ]
-    f_u = open("urls.txt", 'w')
+    f_u = open("urls.txt", 'a')
     f_h = open("hostnames.txt", 'r+')
     page = 1
     while True:
@@ -70,12 +70,13 @@ def otx_crawls(target):
     f_h.close()
 
 a()
-target = input("Enter the target domain: ")
-otx_crawls(target)
-print(f"{y}[*] Total URLs: {len(open('urls.txt', 'r').readlines())}")
-unique_hostnames = set(open('hostnames.txt', 'r').readlines())
-print(f"{y}[*] Total unique hostnames: {len(unique_hostnames)}")
-with open('unique_hostnames.txt', 'w') as f:
-    for hostname in unique_hostnames:
-        f.write(hostname)
-print(f"{y}[*] Unique hostnames saved to file 'unique_hostnames.txt'.")
+
+for target in open(sys.argv[1],"r").read().split("\n"):
+    otx_crawls(target)
+    print(f"{y}[*] Total URLs: {len(open('urls.txt', 'r').readlines())}")
+    unique_hostnames = set(open('hostnames.txt', 'r').readlines())
+    print(f"{y}[*] Total unique hostnames: {len(unique_hostnames)}")
+    with open('unique_hostnames.txt', 'a') as f:
+        for hostname in unique_hostnames:
+            f.write(hostname)
+    print(f"{y}[*] Unique hostnames saved to file 'unique_hostnames.txt'.")
